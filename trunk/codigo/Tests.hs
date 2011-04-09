@@ -6,9 +6,11 @@ import Maybe
 -- evaluar t para correr todos los tests
 t = runTestTT allTests
 
-allTests = test [ 
-	"triviales" ~: testsTriviales
+allTests = test [
+	"triviales" ~: testsTriviales,
+	"tablero" ~: testsTablero
 	]
+
 
 testsTriviales = test [
 	1 ~=? 1,
@@ -16,6 +18,25 @@ testsTriviales = test [
 	[1,2] ~=? [1,2],
 	[1,2] ~~? [2,1]
 	]
+
+
+testsTablero = test [
+  vacio ~=? T (\_ -> Nothing),
+  sacar a_1 vacio ~=? T (\_ -> Nothing),
+  poner a_1 _n vacio ~=? T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
+  poner a_1 _n (poner a_2 _n vacio) ~=? T (\pos -> if (pos == a_1 || pos==a_2) then (Just _n) else Nothing),
+  poner a_1 _n (sacar a_2  vacio) ~=? T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
+  sacar a_1 (poner a_2 _n vacio) ~=? T (\pos -> if (pos==a_2) then (Just _n) else Nothing),
+  sacar a_1 (poner a_1 _n vacio) ~=? T (\_ ->  Nothing)
+  ]
+--explicacion:
+  --vacio == vacio
+  --sacar al vacio mantiene vacio
+  --poner una ficha al vacio se mantiene
+  --poner 2 fichas las mantiene
+  --sacar al vacio y luego agregar devuelve la agregada
+  --poner una ficha en a2 y luego sacar una de a1 deja la de a2.
+  --poner y sacar una ficha la quita.
 
 -- idem ~=? pero sin importar el orden
 (~~?) :: (Ord a, Eq a, Show a) => [a] -> [a] -> Test
@@ -30,7 +51,7 @@ expected ~~ actual = (sort expected) == (sort actual)
 		sort = foldl (\r e -> push r e) []
 		push r e = (filter (e<=) r) ++ [e] ++ (filter (e>) r)
 
--- constantes para que los tests sean más legibles		
+-- constantes para que los tests sean más legibles
 _n = Simple Negra
 _N = Reina Negra
 _b = Simple Blanca
@@ -106,3 +127,4 @@ e_8 = ('e',8::Int)
 f_8 = ('f',8::Int)
 g_8 = ('g',8::Int)
 h_8 = ('h',8::Int)
+

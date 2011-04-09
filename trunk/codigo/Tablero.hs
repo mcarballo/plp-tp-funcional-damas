@@ -9,6 +9,11 @@ type Posicion = (Char, Int)
 data Tablero = T (Posicion -> Maybe Ficha)
 data Direccion = TL | TR | BR | BL deriving (Eq, Ord, Show)
 
+
+
+instance Eq Tablero where
+  t1 == t2 = foldr (\pos r -> r && ((contenido pos t1) == (contenido pos t2))) True posicionesValidas
+
 ---- Funciones de regalo ----
 
 tableroInicial :: Tablero
@@ -21,7 +26,7 @@ tableroInicial = T f
 	  where negro = (ord i - ord 'a' + j) `mod` 2 /= 0
 
 instance Show Tablero where
-  show (T tablero) = 
+  show (T tablero) =
       "   a b c d e f g h  \n" ++
       "  ----------------- \n" ++
       concatMap showFil [8,7..1] ++
@@ -42,9 +47,24 @@ instance Show Tablero where
 
 -- Ejercicio 1
 -- vacio :: Tablero
+vacio:: Tablero
+vacio = T g where g _ = Nothing
+
 
 -- Ejercicio 2
--- contenido :: Posicion -> Tablero -> Maybe Ficha
--- poner :: Posicion -> Ficha -> Tablero -> Tablero
--- sacar :: Posicion -> Tablero -> Tablero
+--contenido :: Posicion -> Tablero -> Maybe Ficha
+contenido::Posicion -> Tablero -> Maybe Ficha
+contenido pos (T f) = f pos
+
+--poner :: Posicion -> Ficha -> Tablero -> Tablero
+poner pos fich (T f) = T (cambiarFuncion f pos (Just fich) )
+
+--sacar :: Posicion -> Tablero -> Tablero
+sacar pos (T f) = T (cambiarFuncion f pos Nothing )
+
+--cambiarFuncion:: (Posicion-> Maybe Ficha)  -> Posicion -> Maybe Ficha  -> (Posicion-> Maybe Ficha)
+cambiarFuncion f pos fich = (\posx -> if (posx==pos) then fich else f posx)
+
+posicionesValidas::[(Char,Int)]
+posicionesValidas = [(c,n) | c <- ['a'..'h'], n <- [1..8]]
 
