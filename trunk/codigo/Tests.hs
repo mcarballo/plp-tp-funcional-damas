@@ -49,13 +49,17 @@ tableroInicial2 = poner a_7 _n (poner c_7 _n (poner e_7 _n (poner g_7 _n (poner 
 testsDamas = test (a_testear)
 
 juegoPrueba = J Blanca tableroInicial
+
 a_testear = map f movs_a_nothing where f mov = (mover mov juegoPrueba) ~=? Nothing
 
 movs_a_nothing =
   inicialmente_invalidos_por_turno ++
   inicialmente_invalidos_por_limites ++
   inicialmente_invalidos_por_origen ++
-  invalido_por_falta_ficha_origen juegoPrueba
+  invalidos_por_falta_ficha_origen juegoPrueba ++
+  invalidos_por_color_del_turno juegoPrueba ++
+  invalidos_por_direccion juegoPrueba
+
 
 
 
@@ -70,9 +74,14 @@ inicialmente_invalidos_por_turno = [M ('b',6) BR,M ('d',6) BL]
 inicialmente_invalidos_por_origen = [M ('z',9) BL, M ('a',9) BR, M ('s',8) TR, M ('i',8) TL,M (' ',0) TR, M ('h',-2) TL]
 
 --movimientos invalidos por origen sin ficha
-invalido_por_falta_ficha_origen juego = [M pos BL| pos <- posicionesSinFichas juego] ++ [M pos TL| pos <- posicionesSinFichas juego]
+invalidos_por_falta_ficha_origen juego = [M pos BL| pos <- posicionesSinFichas juego] ++ [M pos TL| pos <- posicionesSinFichas juego]
 
-invalido_por_color_del_turno = [M pos BR| pos <- posicionesConFichasDeColor juego Negra]
+--movimientos invalidos por color (turno del oponente)
+invalidos_por_color_del_turno juego = [M pos BR| pos <- posicionesConFichasDeColor juego Negra]
+
+--movimientos invalidos por direccion incorrecta (blancas para arriba por ejemplo)
+invalidos_por_direccion juego = [M pos TR| pos <- posicionesSimplesDeColor juego Negra]++[M pos TL| pos <- posicionesSimplesDeColor juego Negra]
+
 
 
 ------------FIN SECUENCIAS -------------------------------------
