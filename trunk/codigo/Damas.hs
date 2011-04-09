@@ -53,6 +53,8 @@ movimientosPosibles = error "falta implementar"
 ------FUNCIONES PARA TESTS----------
 
 posicionesSinFichas juego = [pos|pos<-posicionesValidas,contenido pos (tablero juego) == Nothing]
+posicionesConFichasDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just (Simple color))|| contenido pos (tablero juego) == (Just (Reina color)) ]
+
 
 
 tablero::Juego -> Tablero
