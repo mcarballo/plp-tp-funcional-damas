@@ -27,7 +27,7 @@ arbolDeJugadas j = Nodo ([], j) $ zipWith agmov movs hijos
 
 -- Ejercicio 3
 -- mover :: Movimiento -> Juego -> Maybe Juego
-
+mover mov jue = Nothing
 -- Ejercicio 4
 movimientosPosibles :: Juego -> [(Movimiento, Juego)]
 movimientosPosibles = error "falta implementar"
@@ -46,3 +46,15 @@ movimientosPosibles = error "falta implementar"
 
 -- Ejercicio 9
 -- valuacionDamas :: Juego -> Double
+
+
+
+
+------FUNCIONES PARA TESTS----------
+
+posicionesSinFichas juego = [pos|pos<-posicionesValidas,contenido pos (tablero juego) == Nothing]
+
+
+tablero::Juego -> Tablero
+tablero (J col t) = t
+

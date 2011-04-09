@@ -8,7 +8,8 @@ t = runTestTT allTests
 
 allTests = test [
 	"triviales" ~: testsTriviales,
-	"tablero" ~: testsTablero
+	"tablero" ~: testsTablero,
+	"damas" ~: testsDamas
 	]
 
 
@@ -19,7 +20,7 @@ testsTriviales = test [
 	[1,2] ~~? [2,1]
 	]
 
-
+-----------TABLERO-----------------------
 testsTablero = test [
   vacio ~=? T (\_ -> Nothing),
   sacar a_1 vacio ~=? T (\_ -> Nothing),
@@ -27,9 +28,9 @@ testsTablero = test [
   poner a_1 _n (poner a_2 _n vacio) ~=? T (\pos -> if (pos == a_1 || pos==a_2) then (Just _n) else Nothing),
   poner a_1 _n (sacar a_2  vacio) ~=? T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
   sacar a_1 (poner a_2 _n vacio) ~=? T (\pos -> if (pos==a_2) then (Just _n) else Nothing),
-  sacar a_1 (poner a_1 _n vacio) ~=? T (\_ ->  Nothing)
-  ]
---explicacion:
+  sacar a_1 (poner a_1 _n vacio) ~=? T (\_ ->  Nothing),
+  tableroInicial2 ~=? tableroInicial
+  --explicacion:
   --vacio == vacio
   --sacar al vacio mantiene vacio
   --poner una ficha al vacio se mantiene
@@ -37,6 +38,41 @@ testsTablero = test [
   --sacar al vacio y luego agregar devuelve la agregada
   --poner una ficha en a2 y luego sacar una de a1 deja la de a2.
   --poner y sacar una ficha la quita.
+  --tablero completo inicial coincide con el de la catedra.
+  ]
+
+
+tableroInicial2 = poner a_7 _n (poner c_7 _n (poner e_7 _n (poner g_7 _n (poner b_6 _n (poner b_8 _n (poner d_6 _n (poner d_8 _n (poner f_6 _n (poner f_8 _n (poner h_6 _n (poner h_8 _n (poner a_1 _b (poner a_3 _b (poner c_1 _b (poner c_3 _b (poner e_1 _b (poner e_3 _b (poner g_1 _b (poner g_3 _b (poner b_2 _b (poner d_2 _b (poner f_2 _b (poner h_2 _b vacio)))))))))))))))))))))))
+
+-----------DAMAS-----------------------
+
+testsDamas = test (a_testear)
+
+juegoPrueba = J Blanca tableroInicial
+a_testear = map f movs_a_nothing where f mov = (mover mov juegoPrueba) ~=? Nothing
+
+movs_a_nothing =
+  inicialmente_invalidos_por_turno ++
+  inicialmente_invalidos_por_limites ++
+  inicialmente_invalidos_por_origen ++
+  invalido_por_falta_ficha_origen juegoPrueba
+
+--movimientos invalidos por limites del tablero
+inicialmente_invalidos_por_limites = [M ('a',1) BL, M ('a',1) BR, M ('b',8) TR, M ('b',8) TL,M ('h',8) TR, M ('h',2) TL]
+
+--movimientos invalidos por turno (color)
+inicialmente_invalidos_por_turno = [M ('b',6) BR,M ('d',6) BL]
+
+--movimientos invalidos por origen invalidos
+inicialmente_invalidos_por_origen = [M ('z',9) BL, M ('a',9) BR, M ('s',8) TR, M ('i',8) TL,M (' ',0) TR, M ('h',-2) TL]
+
+--movimientos invalidos por origen sin ficha
+invalido_por_falta_ficha_origen juego = [M pos BL| pos <- posicionesSinFichas juego] ++ [M pos TL| pos <- posicionesSinFichas juego]
+
+
+
+
+-----------AYUDAS-----------------------
 
 -- idem ~=? pero sin importar el orden
 (~~?) :: (Ord a, Eq a, Show a) => [a] -> [a] -> Test
