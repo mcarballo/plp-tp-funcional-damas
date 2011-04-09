@@ -57,6 +57,9 @@ movs_a_nothing =
   inicialmente_invalidos_por_origen ++
   invalido_por_falta_ficha_origen juegoPrueba
 
+
+
+------------SECUENCIAS DE MOVIMIENTOS DE PRUEBA----------------
 --movimientos invalidos por limites del tablero
 inicialmente_invalidos_por_limites = [M ('a',1) BL, M ('a',1) BR, M ('b',8) TR, M ('b',8) TL,M ('h',8) TR, M ('h',2) TL]
 
@@ -69,7 +72,10 @@ inicialmente_invalidos_por_origen = [M ('z',9) BL, M ('a',9) BR, M ('s',8) TR, M
 --movimientos invalidos por origen sin ficha
 invalido_por_falta_ficha_origen juego = [M pos BL| pos <- posicionesSinFichas juego] ++ [M pos TL| pos <- posicionesSinFichas juego]
 
+invalido_por_color_del_turno = [M pos BR| pos <- posicionesConFichasDeColor juego Negra]
 
+
+------------FIN SECUENCIAS -------------------------------------
 
 
 -----------AYUDAS-----------------------
