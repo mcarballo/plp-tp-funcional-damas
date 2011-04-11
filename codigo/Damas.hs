@@ -23,7 +23,7 @@ instance Show Juego where
   show (J turno tablero) = "\n--Juegan las " ++ show turno ++ "s--\n" ++ show tablero
 
 instance Eq Juego where
-  j1 == j2 = tablero j1 == tablero j2 && color j1 == color j2
+  j1 == j2 = tablero j1 == tablero j2 && colorJ j1 == colorJ j2
 
 arbolDeJugadas :: Juego -> ArbolJugadas
 arbolDeJugadas j = Nodo ([], j) $ zipWith agmov movs hijos
@@ -37,58 +37,42 @@ arbolDeJugadas j = Nodo ([], j) $ zipWith agmov movs hijos
 -- Ejercicio 3
 
 mover :: Movimiento -> Juego -> Maybe Juego
-mover mov jue = Nothing
-{-
-mover :: Movimiento -> Juego -> Maybe Juego
-mover (M pos dir) (J col (T f)) = if cumpleCondiciones then hacerMovimiento else Nothing
-				where
-					cumpleCondiciones = posicionesEnRango && hayFichaEnOrigen && 									    mueveElJugadorCorrespondiente && mueveEnDirCorrecta &&
-							    puedeMover  
-					posicionOrigenEnRango =  enTablero pos
-					posicionDestinoEnRango = if posLlegada == Nothing then False else enTablero posLlegada 
-					noHayFichaEnDestino = 
-					hayFichaEnOrigen = 
-					mueveElJugadorCorrespondiente = 
-					mueveEnDirCorrecta =
-					puedeMover =
-					----
-					hacerMovimiento = if destinoLibre then moverSimple else moverConSalto
-					destinoLibre = ( (f posicionDirecta) == Nothing)
-					moverSimple = Maybe (J (cambiaColor col) tableroDeMueve)
-					moverConSalto = Maybe (J (cambiaColor col) tableroDeSalto)
-					tableroDeMueve = sacar pos (poner posicionDirecta fichaAMover (T f))
-					tableroDeSalto = sacar posDirecta (sacar pos (poner posicionDeSalto fichaAMover (T f)) )
-					posicionDirecta = damePosicion (M pos dir)
-					posicionDeSalto = damePosicion (M posicionDirecta dir)
-					fichaAMover = dameFicha (f pos)
-					----
+--mover mov jue = Nothing
+
+mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothing else moverSegunSiEsSimpleOCaptura
+
+		where
+			elMovimientoDirectoEsInvalido = ( (not origenEnRango) || (not destino1EnRango) || 
+							(not hayFichaEnOrigen) || (not mueveElJugadorCorrespondiente) ||
+							(not mueveEnDireccionCorrecta) )
+			
+			laCapturaEsInvalida = 	((not destino1Vacio) && seVaAAutoCapturar) || (not destino2EnRango) || (not destino2Vacio)
+			
+			moverSegunSiEsSimpleOCaptura = 	if (destino1Vacio)
+								then realizarMovimiento origen destino1 j
+								else realizarMovimiento origen destino2 j
+			origen = posMov m
+			destino1 = posDeMoverDirecto m
+			destino2 = posDeMoverDirecto (M destino1 (dirMov m))
+			fichaOrigen = dameFicha (contenido origen (tablero j))
+			fichaDestino1 = dameFicha (contenido destino1 (tablero j))
+			origenEnRango = enRango origen
+			destino1EnRango = enRango destino1
+			hayFichaEnOrigen = not (estaVacia origen (tablero j))
+			mueveElJugadorCorrespondiente = colorF fichaOrigen == colorJ j
+			destino1Vacio = estaVacia destino1 (tablero j)
+			seVaAAutoCapturar = colorF fichaDestino1 == colorJ j
+			destino2EnRango = enRango destino2
+			destino2Vacio = estaVacia destino2 (tablero j)
+			mueveEnDireccionCorrecta = (esNegraSimple && mueveHaciaAbajo) || (esBlancaSimple && mueveHaciaArriba) || esReina fichaOrigen
+			esNegraSimple = (colorF fichaOrigen == Negra) && (not (esReina fichaOrigen))
+			esBlancaSimple = (colorF fichaOrigen == Blanca) && (not (esReina fichaOrigen))
+			mueveHaciaAbajo = (dirMov m == BL) || (dirMov m == BR)
+			mueveHaciaArriba = (dirMov m == TL) || (dirMov m == TR)
+							
+		
 						
--}
-
--- devuelve la posicion del tablero en donde va a quedar la ficha que se quiere mover
--- OJO: Si quiere "comer" una ficha propia o se sale de rango, devuelve Nothing
-posLlegada :: Movimiento -> Juego -> Maybe Posicion
-posLlegada (M pos dir) (J col (T f)) = if posDirectaLibre then Just posDirecta else posNoDirecta 
-		where 
-			posDirecta = posDeMoverDirecto (M pos dir)
-			posNoDirecta = if posNoDirectaLibre && comidaDisponible then Just posDeMoverDirecto (M posicionDeMovimientoDirecto dir) else Nothing
-
-
-enTablero :: Posicion -> Bool
-enTablero p = elem p posicionesValidas
-{-}if (saleDeRango posicionFinal) then Nothing else posicionFinal
-						where 
-							saleDeRango = \mp -> elem (damePosicion mp) posicionesValidas
-							posicionFinal = if posDirectaLibre then posDirecta else posDeComidaSiCome 
-							posDirectaLibre = f (posicionDeMovimientoDirecto) == Nothing
-							posDirecta = (Just posicionDeMovimientoDirecto )
-							posicionDeMovimientoDirecto = posDeMoverDirecto (M pos dir)
-							posicionDeComidaSiCome = posDeMoverDirecto (M posicionDeMovimientoDirecto dir)
-							posDeComidaSiCome = if hayFichaOponente then (Just posicionDeComidaSiCome) else Nothing
-							hayFichaOponente = col /= colorDeFicha (dameFicha (f posicionDeMovimientoDirecto))
--}							
-						
---dado un movimiento, devuelve la posicion en donde "desembocaria" ese movimiento (si hay ficha)
+--dado un movimiento, devuelve la posicion en donde "desembocaria" ese movimiento
 posDeMoverDirecto :: Movimiento -> Posicion
 posDeMoverDirecto (M pos TL) = ( chr (ord (fst pos) - 1), (snd pos) + 1 )
 posDeMoverDirecto (M pos TR) = ( chr (ord (fst pos) + 1), (snd pos) + 1 )
@@ -113,6 +97,15 @@ colorDeFicha :: Ficha -> Color
 colorDeFicha (Simple c) = c
 colorDeFicha (Reina c) = c
 
+--devuelve un nuevo juego igual al pasado como parametro pero en el que mueve una ficha desde la posicion origen hasta la posicion destino
+--PRE: el movimiento a realizar es un movimiento valido
+realizarMovimiento :: Posicion -> Posicion -> Juego -> Maybe Juego
+realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo) 
+					where
+						tableroViejo = tablero j
+						fichaOrigen = dameFicha (contenido origen tableroViejo)
+						tableroNuevo = sacar origen ( poner destino fichaOrigen tableroViejo)
+						nuevoColor = cambiaColor (colorJ j)
 
 
 -- Ejercicio 4
@@ -149,9 +142,19 @@ posicionesReinasDeColor juego color = [pos | pos<-posicionesValidas, contenido p
 
 
 
-tablero::Juego -> Tablero
+-------------------- OBSERVADORES PARA TIPO JUEGO --------------------
+
+tablero :: Juego -> Tablero
 tablero (J col t) = t
 
-color::Juego -> Color
-color (J col t) = col
+colorJ ::Juego -> Color
+colorJ (J col t) = col
+
+-------------------- OBSERVADORES PARA TIPO MOVIMIENTO --------------------
+
+dirMov :: Movimiento -> Direccion
+dirMov (M p d) = d
+
+posMov :: Movimiento -> Posicion
+posMov (M p d) = p
 

@@ -65,6 +65,32 @@ sacar pos (T f) = T (cambiarFuncion f pos Nothing )
 --cambiarFuncion:: (Posicion-> Maybe Ficha)  -> Posicion -> Maybe Ficha  -> (Posicion-> Maybe Ficha)
 cambiarFuncion f pos fich = (\posx -> if (posx==pos) then fich else f posx)
 
+--enRango devuelve verdadero si la posicion pasada por parametro esta en rango o falso si no
+enRango p = elem p posicionesValidas
+
+--devuelve verdadero si la posicion esta vacia en el tablero
+estaVacia :: Posicion -> Tablero -> Bool
+estaVacia p t = contenido p t == Nothing
+
 posicionesValidas::[(Char,Int)]
 posicionesValidas = [(c,n) | c <- ['a'..'h'], n <- [1..8]]
+
+
+------------------- OBSERVADORES PARA TABLERO --------------------------
+func :: Tablero -> (Posicion -> Maybe Ficha)
+func (T f) = f
+
+------------------- OBSERVADORES Y AUX PARA FICHA -----------------
+
+colorF :: Ficha -> Color
+colorF (Simple c) = c
+colorF (Reina c) = c
+
+esReina :: Ficha -> Bool
+esReina (Simple _) = False
+esReina (Reina _) = True
+
+esSimple :: Ficha -> Bool
+esSimple (Simple _) = True
+esSimple (Reina _) = False
 
