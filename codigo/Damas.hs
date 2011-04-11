@@ -106,6 +106,7 @@ realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo)
 						fichaOrigen = dameFicha (contenido origen tableroViejo)
 						tableroNuevo = sacar origen ( poner destino fichaOrigen tableroViejo)
 						nuevoColor = cambiaColor (colorJ j)
+						--TODO: HAY QUE VERIFICAR QUE SI EL DESTINO ES UNO DE LOS 2 TOPES DEL TABLERO, HAY QUE CORONAR A LA FICHA
 
 
 -- Ejercicio 4
