@@ -51,7 +51,7 @@ mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothi
 			
 			moverSegunSiEsSimpleOCaptura = 	if (destino1Vacio)
 								then realizarMovimiento origen destino1 j
-								else realizarMovimiento origen destino2 j
+								else realizarMovimiento origen destino2 juegoSinLaFichaAComer
 			origen = posMov m
 			destino1 = posDeMoverDirecto m
 			destino2 = posDeMoverDirecto (M destino1 (dirMov m))
@@ -70,7 +70,7 @@ mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothi
 			esBlancaSimple = (colorF fichaOrigen == Blanca) && (not (esReina fichaOrigen))
 			mueveHaciaAbajo = (dirMov m == BL) || (dirMov m == BR)
 			mueveHaciaArriba = (dirMov m == TL) || (dirMov m == TR)
-							
+			juegoSinLaFichaAComer = J (colorJ j) (sacar destino1 (tablero j))
 		
 						
 --dado un movimiento, devuelve la posicion en donde "desembocaria" ese movimiento
@@ -85,13 +85,7 @@ cambiaColor :: Color -> Color
 cambiaColor Blanca = Negra
 cambiaColor Negra = Blanca
 
-
---devuelve el color de una ficha
-colorDeFicha :: Ficha -> Color
-colorDeFicha (Simple c) = c
-colorDeFicha (Reina c) = c
-
---devuelve un nuevo juego igual al pasado como parametro pero en el que mueve una ficha desde la posicion origen hasta la posicion destino
+--devuelve un nuevo juego igual al pasado como parametro pero en el que mueve una ficha desde la posicion origen hasta la posicion destino,cambiando de turno de jugador
 --PRE: el movimiento a realizar es un movimiento valido
 realizarMovimiento :: Posicion -> Posicion -> Juego -> Maybe Juego
 realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo) 
