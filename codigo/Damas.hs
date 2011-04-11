@@ -46,7 +46,7 @@ mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothi
 							(not hayFichaEnOrigen) || (not mueveElJugadorCorrespondiente) ||
 							(not mueveEnDireccionCorrecta) )
 			
-			laCapturaEsInvalida = 	((not destino1Vacio) && seVaAAutoCapturar) || (not destino2EnRango) || (not destino2Vacio)
+			laCapturaEsInvalida = (not elMovimientoDirectoEsInvalido) && ((not destino1Vacio) && (seVaAAutoCapturar || (not destino2EnRango) || (not destino2Vacio)) )
 			
 			moverSegunSiEsSimpleOCaptura = 	if (destino1Vacio)
 								then realizarMovimiento origen destino1 j
@@ -103,15 +103,27 @@ realizarMovimiento :: Posicion -> Posicion -> Juego -> Maybe Juego
 realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo) 
 					where
 						tableroViejo = tablero j
-						fichaOrigen = dameFicha (contenido origen tableroViejo)
-						tableroNuevo = sacar origen ( poner destino fichaOrigen tableroViejo)
+						fichaVieja = dameFicha (contenido origen tableroViejo)
+						tableroNuevo = sacar origen ( poner destino fichaNueva tableroViejo)
 						nuevoColor = cambiaColor (colorJ j)
-						--TODO: HAY QUE VERIFICAR QUE SI EL DESTINO ES UNO DE LOS 2 TOPES DEL TABLERO, HAY QUE CORONAR A LA FICHA
+						fichaNueva = 	if (llegoAlFondo destino (colorJ j)) 
+										then Reina (colorF fichaVieja)
+										else fichaVieja
+
+llegoAlFondo :: Posicion -> Color -> Bool
+llegoAlFondo p c = ((snd p == 1) && (c == Negra)) || ((snd p == 8) && (c == Blanca))
 
 
 -- Ejercicio 4
 movimientosPosibles :: Juego -> [(Movimiento, Juego)]
-movimientosPosibles = error "falta implementar"
+movimientosPosibles j = 	[((M pos dir), dameJuego (mover (M pos dir) j)) | 
+							pos <- posicionesValidas, dir <- [TL, TR, BL, BR], esMovimientoValido (M pos dir) j]
+							where
+								esMovimientoValido mov = \game -> ((mover mov game) /= Nothing)
+								
+--PRE: el Maybe Juego recibido debe ser del tipo Just <juego>
+dameJuego :: Maybe Juego -> Juego
+dameJuego (Just j) = j
 
 -- Ejercicio 5
 -- foldArbol :: ...
