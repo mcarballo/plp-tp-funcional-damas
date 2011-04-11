@@ -5,6 +5,7 @@ import Tablero
 ----------------------- INCLUIDAS POR NOSOTROS---------------------------
 
 import Char
+import Maybe
 
 -------------------------------------------------------------------------
 
@@ -54,8 +55,8 @@ mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothi
 			origen = posMov m
 			destino1 = posDeMoverDirecto m
 			destino2 = posDeMoverDirecto (M destino1 (dirMov m))
-			fichaOrigen = dameFicha (contenido origen (tablero j))
-			fichaDestino1 = dameFicha (contenido destino1 (tablero j))
+			fichaOrigen = fromJust (contenido origen (tablero j))
+			fichaDestino1 = fromJust (contenido destino1 (tablero j))
 			origenEnRango = enRango origen
 			destino1EnRango = enRango destino1
 			hayFichaEnOrigen = not (estaVacia origen (tablero j))
@@ -84,13 +85,6 @@ cambiaColor :: Color -> Color
 cambiaColor Blanca = Negra
 cambiaColor Negra = Blanca
 
---devuelve la ficha de una Maybe Ficha (ES PRECONDICION QUE SEA JUST)
-dameFicha :: Maybe Ficha -> Ficha
-dameFicha (Just f) = f
-
---devuelve la posicion de una Maybe Posicion (ES PRECONDICION QUE SEA JUST)
-damePosicion :: Maybe Posicion -> Posicion
-damePosicion (Just p) = p
 
 --devuelve el color de una ficha
 colorDeFicha :: Ficha -> Color
@@ -103,7 +97,7 @@ realizarMovimiento :: Posicion -> Posicion -> Juego -> Maybe Juego
 realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo) 
 					where
 						tableroViejo = tablero j
-						fichaVieja = dameFicha (contenido origen tableroViejo)
+						fichaVieja = fromJust (contenido origen tableroViejo)
 						tableroNuevo = sacar origen ( poner destino fichaNueva tableroViejo)
 						nuevoColor = cambiaColor (colorJ j)
 						fichaNueva = 	if (llegoAlFondo destino (colorJ j)) 
@@ -116,14 +110,11 @@ llegoAlFondo p c = ((snd p == 1) && (c == Negra)) || ((snd p == 8) && (c == Blan
 
 -- Ejercicio 4
 movimientosPosibles :: Juego -> [(Movimiento, Juego)]
-movimientosPosibles j = 	[((M pos dir), dameJuego (mover (M pos dir) j)) | 
+movimientosPosibles j = 	[((M pos dir), fromJust (mover (M pos dir) j)) | 
 							pos <- posicionesValidas, dir <- [TL, TR, BL, BR], esMovimientoValido (M pos dir) j]
 							where
 								esMovimientoValido mov = \game -> ((mover mov game) /= Nothing)
-								
---PRE: el Maybe Juego recibido debe ser del tipo Just <juego>
-dameJuego :: Maybe Juego -> Juego
-dameJuego (Just j) = j
+
 
 -- Ejercicio 5
 -- foldArbol :: ...
