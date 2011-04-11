@@ -42,7 +42,7 @@ Conditional Assertion Functions
 > assertEqual preface expected actual =
 >   unless (actual == expected) (assertFailure msg)
 >  where msg = (if null preface then "" else preface ++ "\n") ++
->              "expected: " ++ show expected ++ "\n but got: " ++ show actual
+>              "got: " ++ show expected ++ "\n but expected was: " ++ show actual
 
 
 Overloaded `assert` Function
@@ -228,3 +228,4 @@ the sum of test case errors and failures.
 >                                return (ss2{ path = path0 }, us1)
 >    where path0 = path ss0
 >          ss1 = ss0{ path = node : path0 }
+

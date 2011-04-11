@@ -9,7 +9,8 @@ t = runTestTT allTests
 allTests = test [
 	"triviales" ~: testsTriviales,
 	"tablero" ~: testsTablero,
-	"damas" ~: testsDamas
+	"damas" ~: testsDamasIniciales,
+	"damas2" ~: testsDamasValidos
 	]
 
 
@@ -45,12 +46,12 @@ testsTablero = test [
 tableroInicial2 = poner a_7 _n (poner c_7 _n (poner e_7 _n (poner g_7 _n (poner b_6 _n (poner b_8 _n (poner d_6 _n (poner d_8 _n (poner f_6 _n (poner f_8 _n (poner h_6 _n (poner h_8 _n (poner a_1 _b (poner a_3 _b (poner c_1 _b (poner c_3 _b (poner e_1 _b (poner e_3 _b (poner g_1 _b (poner g_3 _b (poner b_2 _b (poner d_2 _b (poner f_2 _b (poner h_2 _b vacio)))))))))))))))))))))))
 
 -----------DAMAS-----------------------
-
-testsDamas = test (a_testear)
-
 juegoPrueba = J Blanca tableroInicial
 
-a_testear = map f movs_a_nothing where f mov = (mover mov juegoPrueba) ~=? Nothing
+------------------CON TABLERO INCIAL------------
+testsDamasIniciales = test (a_testear)
+
+a_testear = map (\movimiento -> mover movimiento juegoPrueba ~=? Nothing) movs_a_nothing
 
 movs_a_nothing =
   inicialmente_invalidos_por_turno ++
@@ -58,7 +59,20 @@ movs_a_nothing =
   inicialmente_invalidos_por_origen ++
   invalidos_por_falta_ficha_origen juegoPrueba ++
   invalidos_por_color_del_turno juegoPrueba ++
-  invalidos_por_direccion juegoPrueba
+  invalidos_por_direccion juegoPrueba ++
+  inicialmente_invalidos_por_casilla_destino_ocupada
+
+-----------------MOVIMIENTOS VALIDOS-------------
+testsDamasValidos = test (a_testear2)
+
+juegoPrueba2 = J Blanca tableroPrueba
+
+a_testear2 = [
+  mover (M ('d',4) TL ) juegoPrueba2 ~=? Just (J Negra (poner c_5 _b (sacar d_4 tableroPrueba))),
+  mover (M ('d',4) TR ) juegoPrueba2 ~=? Just (J Negra (poner f_6 _b (sacar d_4 tableroPrueba)))
+  ]
+
+tableroPrueba = poner f_4 _b (poner d_6 _n (poner e_5 _n (poner d_4 _b vacio)))
 
 
 
@@ -81,6 +95,9 @@ invalidos_por_color_del_turno juego = [M pos BR| pos <- posicionesConFichasDeCol
 
 --movimientos invalidos por direccion incorrecta (blancas para arriba por ejemplo)
 invalidos_por_direccion juego = [M pos TR| pos <- posicionesSimplesDeColor juego Negra]++[M pos TL| pos <- posicionesSimplesDeColor juego Negra]
+
+--movimientos invalidos por destino ocupado
+inicialmente_invalidos_por_casilla_destino_ocupada = [M ('a',1) TR, M ('c',1) TL, M ('h',2) TL]
 
 
 
