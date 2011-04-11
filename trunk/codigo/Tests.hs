@@ -69,11 +69,17 @@ juegoPrueba2 = J Blanca tableroPrueba
 
 a_testear2 = [
   mover (M ('d',4) TL ) juegoPrueba2 ~=? Just (J Negra (poner c_5 _b (sacar d_4 tableroPrueba))),
-  mover (M ('d',4) TR ) juegoPrueba2 ~=? Just (J Negra (poner f_6 _b (sacar d_4 tableroPrueba)))
+  mover (M ('d',4) TR ) juegoPrueba2 ~=? Just (J Negra (poner f_6 _b (sacar d_4 (sacar e_5 tableroPrueba)))),
+  mover (M h_7 TL) juegoPruebaCoronacionB ~=? Just (J Negra (poner g_8 _B (sacar h_7 tableroPruebaCoronacion))),
+  mover (M b_2 BL) juegoPruebaCoronacionN ~=? Just (J Blanca (poner a_1 _N (sacar b_2 tableroPruebaCoronacion))),
+  mover (M f_2 BL) juegoPruebaCoronacionB ~=? Just (J Negra (poner e_1 _B (sacar f_2 tableroPruebaCoronacion)))
   ]
 
 tableroPrueba = poner f_4 _b (poner d_6 _n (poner e_5 _n (poner d_4 _b vacio)))
 
+juegoPruebaCoronacionB = J Blanca tableroPruebaCoronacion
+juegoPruebaCoronacionN = J Negra tableroPruebaCoronacion
+tableroPruebaCoronacion = poner h_7 _B (poner b_2 _n (poner f_2 _B vacio))
 
 
 
