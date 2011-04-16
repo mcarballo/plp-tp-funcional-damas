@@ -38,8 +38,6 @@ arbolDeJugadas j = Nodo ([], j) $ zipWith agmov movs hijos
 -- Ejercicio 3
 
 mover :: Movimiento -> Juego -> Maybe Juego
---mover mov jue = Nothing
-
 mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothing else moverSegunSiEsSimpleOCaptura
 
 		where
@@ -120,8 +118,7 @@ foldArbol f (Nodo x ys) = f x (map (foldArbol f) ys)
 -- Ejercicio 6
 --primero las variantes escritas usando recursion
 podar :: Int -> Arbol a -> Arbol a
-podar 0 (Nodo x hijos) = (Nodo x [])
-podar n (Nodo x hijos) = Nodo x (map (podar (n-1)) hijos)
+podar = flip podar'
 
 podar' :: Arbol a -> Int -> Arbol a
 podar' = foldArbol (\val rec n -> if (n==1) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
@@ -165,16 +162,19 @@ distancias = foldArbol (\e hijos -> if (null hijos) then [0] else map (+1) (conc
 altura = foldArbol (\e rec -> if (null rec) then 1 else 1 + (maxLista rec)) where maxLista = foldr1 max
 altura2 = (+1).maxLista.distancias where maxLista = foldr1 max
 altura3 a = maxLista (map (+1) (distancias a)) where maxLista = foldr1 max
-
+-}
 --arbol de pruebas
 ap = Nodo 1 [(Nodo 2 [Nodo 4 []]), (Nodo 3 [])]
--}
+
 
 --------------------- FIN EJEMPLOS ------------------------------
 
 -- Ejercicio 7
--- minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
+mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
+mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... pero no estoy seguro
 
+minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
+minimax v aj = (1,[])--hacer
 -- Ejercicio 8
 -- ganador :: Juego -> Maybe Color
 
