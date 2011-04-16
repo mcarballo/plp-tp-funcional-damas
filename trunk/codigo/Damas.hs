@@ -110,11 +110,67 @@ movimientosPosibles j = 	[((M pos dir), fromJust (mover (M pos dir) j)) |
 								esMovimientoValido mov = \game -> ((mover mov game) /= Nothing)
 
 
+
 -- Ejercicio 5
--- foldArbol :: ...
+foldArbol :: (a -> [b] -> b) -> Arbol a -> b
+foldArbol f (Nodo x ys) = f x (map (foldArbol f) ys)
+
+
 
 -- Ejercicio 6
--- podar :: Int -> Arbol a -> Arbol a
+--primero las variantes escritas usando recursion
+podar :: Int -> Arbol a -> Arbol a
+podar 0 (Nodo x hijos) = (Nodo x [])
+podar n (Nodo x hijos) = Nodo x (map (podar (n-1)) hijos)
+
+podar' :: Arbol a -> Int -> Arbol a
+podar' = foldArbol (\val rec n -> if (n==1) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
+		where
+			aplicar n f = f n
+--VER EL CASO BASE. COMO LOS ARBOLES TIENEN AL MENOS UN NIVEL, EL CASO BASE SERÍA PODAR AL PRIMER NIVEL, Y NO AL CEROESIMO
+--VER QUE REC ES UNA LISTA DE FUNCIONES QUE VAN DE INT -> ARBOL A			
+
+{------- ESTO ES UN EJEMPLO COMPLETO DE UNA REDUCCION DEL PODAR'--------
+
+DEF: Sea funcion = (\val rec n -> if (n==1) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
+
+podar' (Nodo 3 [Nodo 2 [Nodo 1 []], Nodo 5 [Nodo 9 []]]) 2
+~~>
+foldArbol funcion (Nodo 3 [Nodo 2 [Nodo 1 []], Nodo 5 [Nodo 9 []]]) 2
+~~>
+if (2==1) then Nodo val [] else Nodo val (map (aplicar (2-1)) rec)   
+--rec es el paso recursivo del foldArbol. Es lo que aparece abajo como el segundo map
+~~>
+Nodo 3 (map (aplicar (1)) (map (foldArbol funcion) [Nodo 2 [Nodo 1 []], Nodo 5 [Nodo 9 []]]))
+~~> 
+Nodo 3 (map (aplicar (1)) ([foldArbol funcion (Nodo 2 [Nodo 1 []]), foldArbol funcion (Nodo 5 [Nodo 9 []])]))
+~~>
+Nodo 3 [foldArbol funcion (Nodo 2 [Nodo 1 []]) 1, foldArbol funcion (Nodo 5 [Nodo 9 []]) 1]
+~~>
+Nodo 3 [funcion 2 (map (foldArbol funcion) [Nodo 1 []]) 1, funcion 5 (map (foldArbol funcion) [Nodo 9 []]) 1 ]
+~~>
+Nodo 3 [Nodo 2 [], Nodo 5 []]
+-}
+			
+
+
+-------------------- EJEMPLOS -----------------------------------
+{-
+cantNodos = foldArbol (\e rec -> 1 + sum rec)
+
+hojas = foldArbol (\e hijos -> if (null hijos) then e:[] else concat hijos)
+
+distancias = foldArbol (\e hijos -> if (null hijos) then [0] else map (+1) (concat hijos))
+
+altura = foldArbol (\e rec -> if (null rec) then 1 else 1 + (maxLista rec)) where maxLista = foldr1 max
+altura2 = (+1).maxLista.distancias where maxLista = foldr1 max
+altura3 a = maxLista (map (+1) (distancias a)) where maxLista = foldr1 max
+
+--arbol de pruebas
+ap = Nodo 1 [(Nodo 2 [Nodo 4 []]), (Nodo 3 [])]
+-}
+
+--------------------- FIN EJEMPLOS ------------------------------
 
 -- Ejercicio 7
 -- minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
