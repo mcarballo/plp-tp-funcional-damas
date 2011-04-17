@@ -11,7 +11,8 @@ allTests = test [
 	"tablero" ~: testsTablero,
 	"damas" ~: testsDamasIniciales,
 	"damas2" ~: testsDamasValidos,
-	"podarArbol" ~: testPodar
+	"podarArbol" ~: testPodar,
+	"valuacion" ~: testValuacion
 	]
 
 
@@ -126,6 +127,22 @@ testPodar = [
 	]
 
 --TODO: testear el "podar", "mejorMovimiento" (minimax), "ganador" y "valuacionDamas"
+
+
+
+
+
+
+
+-------------- TESTS VALUACIONES --------------
+
+tabGananBlancas = poner f_6 _b (poner g_7 _b (poner h_8 _n vacio))
+
+testValuacion = [
+		valuacionDamas (J Blanca tabGananBlancas) ~=? 1
+	]
+
+
 
 -----------AYUDAS-----------------------
 
