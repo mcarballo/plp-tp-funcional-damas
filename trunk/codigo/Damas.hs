@@ -21,6 +21,13 @@ type Valuacion = Juego -> Double
 instance (Eq a) => Eq (Arbol a) where
 	a1 == a2 = ((vNodo a1) == (vNodo a2)) && (hijos a1 == hijos a2)
 
+instance Eq (Movimiento) where
+	a1 == a2 = ((posicion a1) == (posicion a2)) && (direccion a1 == direccion a2)
+
+posicion (M p d) = p
+direccion (M p d) = d
+
+
 --		foldArbol (\valNodo rec arbol -> (valNodo == (vNodo arbol)) && (todos (aplicarSucesivamente (rec) (hijos arbol) )) )--rec :: [(Arbol a -> Bool)]
 --		where
 --			todos = foldr (\b rec -> b && rec) True

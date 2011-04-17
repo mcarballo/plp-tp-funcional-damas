@@ -33,7 +33,7 @@ jugarConAnt jugB jugN juegoAnt juego@(J turno tablero) = do
        jugarConAnt jugB jugN juego juego'
      else do
        putStr "\n~~ Final del juego! ~~\n"
-       putStr $ "Ganan las " ++ show (fromJust gan) ++ "s\n"     
+       putStr $ "Ganan las " ++ show (fromJust gan) ++ "s\n"
   where
     jugador Blanca = jugB
     jugador Negra  = jugN
@@ -49,14 +49,14 @@ proxJuego Humano juego@(J turno _) = do
     if not (entradaValida l)
       then do
         putStr $ "Entrada invalida.\n"
-        proxJuego Humano juego 
+        proxJuego Humano juego
       else
         let mov = M (pos l) (dir [l !! 2, l !! 3])
             res = mover mov juego in
           if isNothing res
             then do
               putStr $ "Movimiento invalido.\n"
-              proxJuego Humano juego 
+              proxJuego Humano juego
             else
               return $ fromJust res
   where
@@ -71,7 +71,7 @@ proxJuego Humano juego@(J turno _) = do
     entradaValida l = length l == 4 &&
                       (l !! 0) `elem` ['a'..'h'] &&
                       (l !! 1) `elem` ['1'..'8'] &&
-                      (l !! 2) `elem` "bt" && 
+                      (l !! 2) `elem` "bt" &&
                       (l !! 3) `elem` "lr"
 proxJuego (Maquina nivel) juego@(J turno _) = do
   putStr $ "Pensando... (" ++ show turno ++ "s)\n"
@@ -96,7 +96,7 @@ normalizar = filter (/= ' ') . map toLower
 mostrarJ (J turno0 tablero0) (J turno tablero) =
   "\n--Juegan las " ++ show turno ++ "s--\n" ++ mostrarT tablero0 tablero
 
-mostrarT (T tablero0) (T tablero) = 
+mostrarT (T tablero0) (T tablero) =
     "   a b c d e f g h  \n" ++
     "  ----------------- \n" ++
     concatMap showFil [8,7..1] ++
