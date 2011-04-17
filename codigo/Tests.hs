@@ -128,10 +128,9 @@ testPodar = [
 	podar 4 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 [Nodo 3 []]]]
   ]
 
+-------------- TEST MEJOR MOVIMIENTO ---------
 
---TODO: testear el "podar", "mejorMovimiento" (minimax), "ganador" y "valuacionDamas"
-
-
+mejorMovTest = mejorMovimiento valuacionDamas (podar 4 (arbolDeJugadas juegoPrueba2))
 
 
 
