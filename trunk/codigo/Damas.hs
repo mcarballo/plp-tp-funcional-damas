@@ -178,8 +178,8 @@ mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax _ _ = (0,[])
 
-
 {- 
+
 ################ ESTE ES EL MINIMAX QUE PENSE (mariano) ####### (hay que testearlo) ############
 
 
@@ -187,7 +187,7 @@ minimax _ _ = (0,[])
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										if (null listaRec) 
-											then (valuacion (snd movs_juego),[last (fst movs_juego)])
+											then (valuacion (snd movs_juego),[head (fst movs_juego)])
 											else (minimaValuacion listaRec, movimientos listaRec)
 								) arbol--listaRec :: [(Double, [Movimiento])]
 							where
