@@ -174,20 +174,10 @@ mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
 mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... pero no estoy seguro
 
 
---esta definicion la dejo pa que hugs no tire errores
-minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
-minimax _ _ = (0,[])
-
-{- 
-
-################ ESTE ES EL MINIMAX QUE PENSE (mariano) ####### (hay que testearlo) ############
-
-
-
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										if (null listaRec) 
-											then (valuacion (snd movs_juego),[head (fst movs_juego)])
+											then (valuacion (snd movs_juego),fst movs_juego)
 											else (minimaValuacion listaRec, movimientos listaRec)
 								) arbol--listaRec :: [(Double, [Movimiento])]
 							where
@@ -214,9 +204,6 @@ dameIndice e = foldr (\x rec -> if (e == x) then 0 else 1 + rec) 0
 valuacionConveniente :: Color -> Valuacion -> Juego -> Double
 valuacionConveniente c v j = if ( (colorJ j) == c) then v j else -(v j)
 
-
-###################################### HASTA ACA ###########################################
--}
 
 
 -- Ejercicio 8
