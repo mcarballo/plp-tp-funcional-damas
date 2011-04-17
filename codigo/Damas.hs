@@ -218,19 +218,28 @@ valuacionConveniente c v j = if ( (colorJ j) == c) then v j else -(v j)
 
 -- Ejercicio 8
 ganador :: Juego -> Maybe Color
-ganador j = if (null (movimientosPosibles j)) then Just (cambiaColor (colorJ j)) else Nothing
+ganador j = 	if (null (movimientosPosibles j))
+					then Just (cambiaColor (colorJ j)) 
+					else (	if (null (movimientosPosibles juegoOponente))
+								then Just (colorJ j)
+								else Nothing
+						 )
+					where juegoOponente = J (cambiaColor (colorJ j)) (tablero j)
 
 -- Ejercicio 9
 valuacionDamas :: Juego -> Double
-valuacionDamas j = 	if ( (ganador j) == Nothing )
+valuacionDamas j = 	if ( ((ganador j) == Nothing) &&  ((ganador juegoOponente) == Nothing) )
 						then calculoValuacion
-						else 	(beta ( (ganador j) == (Just (colorJ j)) )) * 1 +
-								(beta ( (ganador j) /= (Just (colorJ j)) )) * (-1)
+						else 	(beta ganaJugadorActual) * 1 +
+								(beta ganaJugadorOponente) * (-1)
 							
 							where
 								calculoValuacion = 2*(numeradorDelCalculo / denominadorDelCalculo) - 1
 								numeradorDelCalculo =  fromIntegral ( (2*cantReinasDelJugador j) + cantSimplesDelJugador j)
 								denominadorDelCalculo = fromIntegral ( (2*cantReinasTotales j) + cantSimplesTotales j)
+								juegoOponente = J (cambiaColor (colorJ j)) (tablero j)
+								ganaJugadorActual = ( (ganador j) == (Just (colorJ j)) )
+								ganaJugadorOponente = ( (ganador juegoOponente) == (Just (cambiaColor (colorJ j))) )
 
 
 beta b = if b then 1 else 0
