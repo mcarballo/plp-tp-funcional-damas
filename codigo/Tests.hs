@@ -125,6 +125,8 @@ testPodar = [
 	podar 1 arbolPruebas ~=? Nodo 1 []
 	]
 
+--TODO: testear el "podar", "mejorMovimiento" (minimax), "ganador" y "valuacionDamas"
+
 -----------AYUDAS-----------------------
 
 -- idem ~=? pero sin importar el orden
