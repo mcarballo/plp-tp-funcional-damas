@@ -110,6 +110,20 @@ inicialmente_invalidos_por_casilla_destino_ocupada = [M ('a',1) TR, M ('c',1) TL
 ------------FIN SECUENCIAS -------------------------------------
 
 
+
+
+
+
+--------------- TESTS PODAR -------------------
+
+arbolPruebas = Nodo 1 	[	Nodo 2 [Nodo 4 []],
+							Nodo 3 []
+						]
+
+
+
+
+
 -----------AYUDAS-----------------------
 
 -- idem ~=? pero sin importar el orden

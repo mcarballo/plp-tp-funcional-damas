@@ -164,7 +164,7 @@ altura2 = (+1).maxLista.distancias where maxLista = foldr1 max
 altura3 a = maxLista (map (+1) (distancias a)) where maxLista = foldr1 max
 -}
 --arbol de pruebas
-ap = Nodo 1 [(Nodo 2 [Nodo 4 []]), (Nodo 3 [])]
+--ap = Nodo 1 [(Nodo 2 [Nodo 4 []]), (Nodo 3 [])]
 
 
 --------------------- FIN EJEMPLOS ------------------------------
@@ -177,7 +177,7 @@ mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										if (null listaRec) 
-											then (valuacion (snd movs_juego),fst movs_juego)
+											then (valuacion (snd (vNodo arbol)),fst movs_juego)
 											else (minimaValuacion listaRec, movimientos listaRec)
 								) arbol--listaRec :: [(Double, [Movimiento])]
 							where
