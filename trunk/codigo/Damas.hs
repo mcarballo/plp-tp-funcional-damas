@@ -173,10 +173,54 @@ ap = Nodo 1 [(Nodo 2 [Nodo 4 []]), (Nodo 3 [])]
 mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
 mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... pero no estoy seguro
 
+
+--esta definicion la dejo pa que hugs no tire errores
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
-minimax v aj = (1,[])--hacer
+minimax _ _ = (0,[])
+
+{- 
+################ ESTE ES EL MINIMAX QUE PENSE (mariano) ####### (hay que testearlo) ############
+
+juegoInicial = J Blanca tableroInicial
+
+minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
+minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
+										if (null listaRec) 
+											then (valuacion (snd movs_juego),[])
+											else (minimaValuacion listaRec, movimientos movs_juego listaRec)
+								) arbol--listaRec :: [(Double, [Movimiento])]
+							where
+								valuacion juego = valuacionConveniente (colorJ juego) fVal juego
+								movimientos movs_juego l_V_lM = (last (fst movs_juego)) : 
+																((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
+																
+								indiceDelMinimo l_V_lM = dameIndice (minimaValuacion l_V_lM) (dameFirsts l_V_lM)
+								minimaValuacion l_V_lM = minL (dameFirsts l_V_lM)
+											
+minL :: Ord a => [a] -> a
+minL = foldr1 (\x rec -> if (x<=rec) then x else rec)
+
+--dameFirsts :: [(a,b)] -> [a]
+dameFirsts = map (fst)
+
+--dameSeconds :: [(a,b)] -> [b]
+dameSeconds = map (snd)
+
+--PRE dameIndice: e debe estar en la lista
+--dameIndice :: Eq a=> a -> [a] -> Int
+dameIndice e = foldr (\x rec -> if (e == x) then 0 else 1 + rec) 0
+
+--Usando esta valuacion, cuando haga minimax, siempre tengo que tomar el maximo valor de las valuaciones en cada paso
+valuacionConveniente :: Color -> Valuacion -> Juego -> Double
+valuacionConveniente c v j = if ( (colorJ j) == c) then v j else -(v j)
+
+###################################### HASTA ACA ###########################################
+-}
+
+
 -- Ejercicio 8
--- ganador :: Juego -> Maybe Color
+ganador :: Juego -> Maybe Color
+ganador j = if (null (movimientosPosibles j)) then Just (cambiaColor (colorJ j)) else Nothing
 
 -- Ejercicio 9
 -- valuacionDamas :: Juego -> Double
@@ -212,3 +256,9 @@ dirMov (M p d) = d
 posMov :: Movimiento -> Posicion
 posMov (M p d) = p
 
+-------------------- OBSERVADORES PARA TIPO ARBOL --------------------
+vNodo :: Arbol a -> a
+vNodo (Nodo x hs) = x
+
+hijos :: Arbol a -> [Arbol a]
+hijos (Nodo x hs) = hs
