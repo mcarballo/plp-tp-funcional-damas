@@ -178,21 +178,21 @@ mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax _ _ = (0,[])
 
+
 {- 
 ################ ESTE ES EL MINIMAX QUE PENSE (mariano) ####### (hay que testearlo) ############
 
-juegoInicial = J Blanca tableroInicial
+
 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										if (null listaRec) 
-											then (valuacion (snd movs_juego),[])
-											else (minimaValuacion listaRec, movimientos movs_juego listaRec)
+											then (valuacion (snd movs_juego),[last (fst movs_juego)])
+											else (minimaValuacion listaRec, movimientos listaRec)
 								) arbol--listaRec :: [(Double, [Movimiento])]
 							where
 								valuacion juego = valuacionConveniente (colorJ juego) fVal juego
-								movimientos movs_juego l_V_lM = (last (fst movs_juego)) : 
-																((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
+								movimientos l_V_lM = ((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
 																
 								indiceDelMinimo l_V_lM = dameIndice (minimaValuacion l_V_lM) (dameFirsts l_V_lM)
 								minimaValuacion l_V_lM = minL (dameFirsts l_V_lM)
@@ -213,6 +213,7 @@ dameIndice e = foldr (\x rec -> if (e == x) then 0 else 1 + rec) 0
 --Usando esta valuacion, cuando haga minimax, siempre tengo que tomar el maximo valor de las valuaciones en cada paso
 valuacionConveniente :: Color -> Valuacion -> Juego -> Double
 valuacionConveniente c v j = if ( (colorJ j) == c) then v j else -(v j)
+
 
 ###################################### HASTA ACA ###########################################
 -}
