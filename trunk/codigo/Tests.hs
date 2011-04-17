@@ -131,9 +131,14 @@ juegoPrueba3 = sacarJust (mover (M ('d',6) BR) (sacarJust (mover (M ('d',4) TR )
 sacarJust (Just j) = j
 
 mejorMovTest n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPrueba3))
+mejorMovTest2 n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPrueba2))
 
 testMejorMovimiento = [
-  mejorMovTest 2 ~=? M ('f',4) TL
+  mejorMovTest 1 ~=? M ('f',4) TL,
+  mejorMovTest 2 ~=? M ('f',4) TL,
+  mejorMovTest 3 ~=? M ('f',4) TL,
+  mejorMovTest2 1 ~=? M ('d',4) TR,
+  mejorMovTest2 4 ~=? M ('d',4) TR
   ]
 
 
