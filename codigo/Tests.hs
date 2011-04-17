@@ -12,7 +12,8 @@ allTests = test [
 	"damas" ~: testsDamasIniciales,
 	"damas2" ~: testsDamasValidos,
 	"podarArbol" ~: testPodar,
-	"valuacion" ~: testValuacion
+	"valuacion" ~: testValuacion,
+  "mejorMov" ~: testMejorMovimiento
 	]
 
 
@@ -130,8 +131,17 @@ testPodar = [
 
 -------------- TEST MEJOR MOVIMIENTO ---------
 
-mejorMovTest = mejorMovimiento valuacionDamas (podar 4 (arbolDeJugadas juegoPrueba2))
 
+
+juegoPrueba3 = sacarJust (mover (M ('d',6) BR) (sacarJust (mover (M ('d',4) TR ) juegoPrueba2)))
+
+sacarJust (Just j) = j
+
+mejorMovTest n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPrueba3))
+
+testMejorMovimiento = [
+  mejorMovTest 2 ~=? M ('f',4) TL
+  ]
 
 
 
