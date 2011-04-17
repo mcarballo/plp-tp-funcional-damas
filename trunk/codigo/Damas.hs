@@ -223,10 +223,37 @@ ganador :: Juego -> Maybe Color
 ganador j = if (null (movimientosPosibles j)) then Just (cambiaColor (colorJ j)) else Nothing
 
 -- Ejercicio 9
--- valuacionDamas :: Juego -> Double
+valuacionDamas :: Juego -> Double
+valuacionDamas j = 	if ( (ganador j) == Nothing )
+						then calculoValuacion
+						else 	(beta ( (ganador j) == (Just (colorJ j)) )) * 1 +
+								(beta ( (ganador j) /= (Just (colorJ j)) )) * (-1)
+							
+							where
+								calculoValuacion = 2*(numeradorDelCalculo / denominadorDelCalculo) - 1
+								numeradorDelCalculo =  fromIntegral ( (2*cantReinasDelJugador j) + cantSimplesDelJugador j)
+								denominadorDelCalculo = fromIntegral ( (2*cantReinasTotales j) + cantSimplesTotales j)
 
 
+beta b = if b then 1 else 0
 
+cantReinasTotales j = cantFichaDeterminada (esReina) j
+
+cantSimplesTotales j = cantFichaDeterminada (esSimple) j
+
+cantReinasDelJugador j = cantFichaDeterminada (esReinaYDeColor) j
+							where esReinaYDeColor ficha = (esReina ficha) && ((colorF ficha) == colorJ j)
+							
+cantSimplesDelJugador j = cantFichaDeterminada (esSimpleYDeColor) j
+							where esSimpleYDeColor ficha = (esSimple ficha) && ((colorF ficha) == colorJ j)
+							
+cantFichaDeterminada :: (Ficha -> Bool) -> Juego -> Int
+cantFichaDeterminada f j = foldr (\pos cantReinasParcial -> 
+								if ((contenido pos (tablero j) == Nothing) || 
+									not (f (fromJust (contenido pos (tablero j))))) 
+									then cantReinasParcial
+									else 1 + cantReinasParcial )
+							0 (posicionesValidas)
 
 ------FUNCIONES PARA TESTS----------
 
