@@ -18,12 +18,15 @@ type ArbolJugadas = Arbol ([Movimiento], Juego)
 
 type Valuacion = Juego -> Double
 
-instance Eq Arbol a where 
-	a1 == a2 = foldArbol (\valNodo rec arbol -> (valNodo == (vNodo arbol)) && (todos (aplicarSucesivamente (rec) (hijos arbol) )) )
-		where
-			todos = foldr (\b rec -> b && rec) True
-			aplicarSucesivamente lsF lsA = 
-	--rec :: [(Arbol a -> Bool)]
+--TODO: definir la igualdad usando foldArbol
+instance (Eq a) => Eq (Arbol a) where
+	a1 == a2 = ((vNodo a1) == (vNodo a2)) && (hijos a1 == hijos a2)
+
+--		foldArbol (\valNodo rec arbol -> (valNodo == (vNodo arbol)) && (todos (aplicarSucesivamente (rec) (hijos arbol) )) )--rec :: [(Arbol a -> Bool)]
+--		where
+--			todos = foldr (\b rec -> b && rec) True
+--			aplicarSucesivamente = foldr (\f rec lsAs -> (f (head lsAs)) : (rec (tail lsAs))) (const [])
+	
 
 ---- Funciones de regalo ----
 
