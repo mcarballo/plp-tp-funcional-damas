@@ -109,22 +109,25 @@ inicialmente_invalidos_por_casilla_destino_ocupada = [M ('a',1) TR, M ('c',1) TL
 
 
 
-------------FIN SECUENCIAS -------------------------------------
+------------FIN SECUENCIAS ----------------
+----------- TESTS PODAR -------------------
 
 
+arbol1 = Nodo 1 [Nodo 2 [Nodo 3 []]]
+arbol2 = infinito (Nodo 0 [])
 
 
+infinito ab = Nodo (vNodo ab) [ infinito (Nodo ((vNodo ab)+1) []) ]
 
-
---------------- TESTS PODAR -------------------
-
-arbolPruebas = Nodo 1 	[	Nodo 2 [Nodo 4 []],
-							Nodo 3 []
-						]
 
 testPodar = [
-	podar 1 arbolPruebas ~=? Nodo 1 []
-	]
+	podar 1 arbol1 ~=? Nodo 1 [],
+	podar 1 arbol2 ~=? Nodo 0 [],
+	podar 2 arbol2 ~=? Nodo 0 [Nodo 1 []],
+	podar 3 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 []]],
+	podar 4 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 [Nodo 3 []]]]
+  ]
+
 
 --TODO: testear el "podar", "mejorMovimiento" (minimax), "ganador" y "valuacionDamas"
 
@@ -164,6 +167,7 @@ _n = Simple Negra
 _N = Reina Negra
 _b = Simple Blanca
 _B = Reina Blanca
+
 a_1 = ('a',1::Int)
 b_1 = ('b',1::Int)
 c_1 = ('c',1::Int)
