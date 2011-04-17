@@ -7,21 +7,12 @@ import Maybe
 t = runTestTT allTests
 
 allTests = test [
-	"triviales" ~: testsTriviales,
 	"tablero" ~: testsTablero,
 	"damas" ~: testsDamasIniciales,
 	"damas2" ~: testsDamasValidos,
 	"podarArbol" ~: testPodar,
 	"valuacion" ~: testValuacion,
   "mejorMov" ~: testMejorMovimiento
-	]
-
-
-testsTriviales = test [
-	1 ~=? 1,
-	2 ~=? 2,
-	[1,2] ~=? [1,2],
-	[1,2] ~~? [2,1]
 	]
 
 -----------TABLERO-----------------------
@@ -111,6 +102,8 @@ inicialmente_invalidos_por_casilla_destino_ocupada = [M ('a',1) TR, M ('c',1) TL
 
 
 ------------FIN SECUENCIAS ----------------
+
+
 ----------- TESTS PODAR -------------------
 
 
@@ -142,8 +135,6 @@ mejorMovTest n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPr
 testMejorMovimiento = [
   mejorMovTest 2 ~=? M ('f',4) TL
   ]
-
-
 
 
 -------------- TESTS VALUACIONES --------------

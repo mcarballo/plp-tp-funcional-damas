@@ -10,7 +10,7 @@ data Tablero = T (Posicion -> Maybe Ficha)
 data Direccion = TL | TR | BR | BL deriving (Eq, Ord, Show)
 
 
-
+---- Igualdades -----
 instance Eq Tablero where
   t1 == t2 = foldr (\pos r -> r && ((contenido pos t1) == (contenido pos t2))) True posicionesValidas
 
