@@ -179,8 +179,10 @@ altura3 a = maxLista (map (+1) (distancias a)) where maxLista = foldr1 max
 --------------------- FIN EJEMPLOS ------------------------------
 
 -- Ejercicio 7
+
+
 mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
-mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... pero no estoy seguro
+mejorMovimiento v aj = head (snd (minimax v aj))
 
 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
@@ -218,7 +220,7 @@ valuacionConveniente c v j = if ( (colorJ j) == c) then v j else -(v j)
 -- Ejercicio 8
 ganador :: Juego -> Maybe Color
 ganador j = 	if (null (movimientosPosibles j))
-					then Just (cambiaColor (colorJ j)) 
+					then Just (cambiaColor (colorJ j))
 					else (	if (null (movimientosPosibles juegoOponente))
 								then Just (colorJ j)
 								else Nothing
