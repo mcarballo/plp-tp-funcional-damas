@@ -18,6 +18,13 @@ type ArbolJugadas = Arbol ([Movimiento], Juego)
 
 type Valuacion = Juego -> Double
 
+instance Eq Arbol a where 
+	a1 == a2 = foldArbol (\valNodo rec arbol -> (valNodo == (vNodo arbol)) && (todos (aplicarSucesivamente (rec) (hijos arbol) )) )
+		where
+			todos = foldr (\b rec -> b && rec) True
+			aplicarSucesivamente lsF lsA = 
+	--rec :: [(Arbol a -> Bool)]
+
 ---- Funciones de regalo ----
 
 instance Show Juego where
@@ -177,11 +184,11 @@ mejorMovimiento v aj = head (snd (minimax v aj)) --creo que esta es la idea.... 
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										if (null listaRec) 
-											then (valuacion (snd (vNodo arbol)),fst movs_juego)
+											then (valuacion (snd movs_juego),fst movs_juego)
 											else (minimaValuacion listaRec, movimientos listaRec)
 								) arbol--listaRec :: [(Double, [Movimiento])]
 							where
-								valuacion juego = valuacionConveniente (colorJ juego) fVal juego
+								valuacion juego = valuacionConveniente (colorJ (snd (vNodo arbol))) fVal juego
 								movimientos l_V_lM = ((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
 																
 								indiceDelMinimo l_V_lM = dameIndice (minimaValuacion l_V_lM) (dameFirsts l_V_lM)
