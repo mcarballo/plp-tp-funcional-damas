@@ -121,11 +121,11 @@ infinito ab = Nodo (vNodo ab) [ infinito (Nodo ((vNodo ab)+1) []) ]
 
 
 testPodar = [
-	podar 1 arbol1 ~=? Nodo 1 [],
-	podar 1 arbol2 ~=? Nodo 0 [],
-	podar 2 arbol2 ~=? Nodo 0 [Nodo 1 []],
-	podar 3 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 []]],
-	podar 4 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 [Nodo 3 []]]]
+	podar 0 arbol1 ~=? Nodo 1 [],
+	podar 0 arbol2 ~=? Nodo 0 [],
+	podar 1 arbol2 ~=? Nodo 0 [Nodo 1 []],
+	podar 2 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 []]],
+	podar 3 arbol2 ~=? Nodo 0 [Nodo 1 [Nodo 2 [Nodo 3 []]]]
   ]
 
 -------------- TEST MEJOR MOVIMIENTO ---------
@@ -139,9 +139,16 @@ mejorMovTest = mejorMovimiento valuacionDamas (podar 4 (arbolDeJugadas juegoPrue
 -------------- TESTS VALUACIONES --------------
 
 tabGananBlancas = poner f_6 _b (poner g_7 _b (poner h_8 _n vacio))
+tabNoGanaNadieYEstanEmpatados = sacar g_7 tabGananBlancas
+tabCon2ReinasBlancas1NegraYUnaNegraSimple = poner a_1 _B (poner c_1 _B (poner b_8 _N (poner d_8 _n vacio)))
 
 testValuacion = [
-		valuacionDamas (J Blanca tabGananBlancas) ~=? 1
+		valuacionDamas (J Blanca tabGananBlancas) ~=? 1,
+		valuacionDamas (J Negra tabGananBlancas) ~=? (-1),
+		valuacionDamas (J Negra tabNoGanaNadieYEstanEmpatados) ~=? 0,
+		valuacionDamas (J Blanca tabNoGanaNadieYEstanEmpatados) ~=? 0,
+		valuacionDamas (J Blanca tabCon2ReinasBlancas1NegraYUnaNegraSimple) ~=? (fromIntegral 8 / fromIntegral 7)-1,
+		valuacionDamas (J Negra tabCon2ReinasBlancas1NegraYUnaNegraSimple) ~=? (fromIntegral 6 / fromIntegral 7)-1
 	]
 
 
