@@ -10,7 +10,8 @@ allTests = test [
 	"triviales" ~: testsTriviales,
 	"tablero" ~: testsTablero,
 	"damas" ~: testsDamasIniciales,
-	"damas2" ~: testsDamasValidos
+	"damas2" ~: testsDamasValidos,
+	"podarArbol" ~: testPodar
 	]
 
 
@@ -120,9 +121,9 @@ arbolPruebas = Nodo 1 	[	Nodo 2 [Nodo 4 []],
 							Nodo 3 []
 						]
 
-
-
-
+testPodar = [
+	podar 1 arbolPruebas ~=? Nodo 1 []
+	]
 
 -----------AYUDAS-----------------------
 
