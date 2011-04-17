@@ -130,7 +130,7 @@ podar :: Int -> Arbol a -> Arbol a
 podar = flip podar'
 
 podar' :: Arbol a -> Int -> Arbol a
-podar' = foldArbol (\val rec n -> if (n==1) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
+podar' = foldArbol (\val rec n -> if (n==0) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
 		where
 			aplicar n f = f n
 --VER EL CASO BASE. COMO LOS ARBOLES TIENEN AL MENOS UN NIVEL, EL CASO BASE SERÍA PODAR AL PRIMER NIVEL, Y NO AL CEROESIMO
