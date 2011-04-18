@@ -207,16 +207,6 @@ cantFichaDeterminada f j = foldr (\pos cantReinasParcial ->
 									then cantReinasParcial
 									else 1 + cantReinasParcial) 0 (posicionesValidas)
 
-------FUNCIONES PARA TESTS----------
-
-posicionesSinFichas juego = [pos|pos<-posicionesValidas,contenido pos (tablero juego) == Nothing]
-posicionesConFichasDeColor juego color = posicionesSimplesDeColor juego color ++ posicionesReinasDeColor juego color
-
-posicionesSimplesDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Simple color))]
-
-posicionesReinasDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Reina color))]
-
-
 -------------------- OBSERVADORES PARA TIPO JUEGO --------------------
 
 tablero :: Juego -> Tablero

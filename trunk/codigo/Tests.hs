@@ -159,6 +159,15 @@ testValuacion = [
 
 
 
+
+------FUNCIONES PARA TESTS----------
+
+posicionesSinFichas juego = [pos|pos<-posicionesValidas,contenido pos (tablero juego) == Nothing]
+posicionesConFichasDeColor juego color = posicionesSimplesDeColor juego color ++ posicionesReinasDeColor juego color
+posicionesSimplesDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Simple color))]
+posicionesReinasDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Reina color))]
+
+
 -----------AYUDAS-----------------------
 
 -- idem ~=? pero sin importar el orden
