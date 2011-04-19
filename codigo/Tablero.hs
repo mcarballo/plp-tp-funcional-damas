@@ -45,16 +45,22 @@ instance Show Tablero where
 
 ---- Ejercicios ----
 
+{- Generamos un tablero vacio, el cual es una funcion que para cualquier posicion devuelve Nothing -}
 -- Ejercicio 1
 -- vacio :: Tablero
 vacio:: Tablero
 vacio = T g where g _ = Nothing
 
-
+{- Dada una posicion y un tablero, usamos la funcion definida dentro de tablero para devolver una ficha
+o Nothing en caso que no exista una en esa posicion. -}
 -- Ejercicio 2
 --contenido :: Posicion -> Tablero -> Maybe Ficha
 contenido::Posicion -> Tablero -> Maybe Ficha
 contenido pos (T f) = f pos
+
+{- Tanto para la funcion 'poner' como para 'sacar' utilizamos la funcion 'cambiarFuncion' la cual
+dada una 'Posicion pos' y una 'Maybe Ficha ficha' devuelve una funcion modificada con el cambio
+en la 'Posicion' pos por la 'Maybe Ficha' ficha. -}
 
 --poner :: Posicion -> Ficha -> Tablero -> Tablero
 poner pos fich (T f) = T (cambiarFuncion f pos (Just fich) )
