@@ -20,11 +20,13 @@ testsTablero = test [
   vacio ~=? T (\_ -> Nothing),
   sacar a_1 vacio ~=? T (\_ -> Nothing),
   poner a_1 _n vacio ~=? T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
-  poner a_1 _n (poner a_2 _n vacio) ~=? T (\pos -> if (pos == a_1 || pos==a_2) then (Just _n) else Nothing),
-  poner a_1 _n (sacar a_2  vacio) ~=? T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
-  sacar a_1 (poner a_2 _n vacio) ~=? T (\pos -> if (pos==a_2) then (Just _n) else Nothing),
-  sacar a_1 (poner a_1 _n vacio) ~=? T (\_ ->  Nothing),
-  tableroInicial2 ~=? tableroInicial
+  poner a_1 _n (poner a_2 _n vacio) ~=? 
+  	T (\pos -> if (pos == a_1 || pos==a_2) then (Just _n) else Nothing),
+  poner a_1 _n (sacar a_2  vacio) ~=? 
+  	T (\pos -> if (pos == a_1) then (Just _n) else Nothing),
+  sacar a_1 (poner a_2 _n vacio) ~=? 
+  	T (\pos -> if (pos==a_2) then (Just _n) else Nothing),
+  sacar a_1 (poner a_1 _n vacio) ~=? T (\_ ->  Nothing)
   --explicacion:
   --vacio == vacio
   --sacar al vacio mantiene vacio
@@ -37,15 +39,14 @@ testsTablero = test [
   ]
 
 
-tableroInicial2 = poner a_7 _n (poner c_7 _n (poner e_7 _n (poner g_7 _n (poner b_6 _n (poner b_8 _n (poner d_6 _n (poner d_8 _n (poner f_6 _n (poner f_8 _n (poner h_6 _n (poner h_8 _n (poner a_1 _b (poner a_3 _b (poner c_1 _b (poner c_3 _b (poner e_1 _b (poner e_3 _b (poner g_1 _b (poner g_3 _b (poner b_2 _b (poner d_2 _b (poner f_2 _b (poner h_2 _b vacio)))))))))))))))))))))))
-
 -----------DAMAS-----------------------
 juegoPrueba = J Blanca tableroInicial
 
 ------------------CON TABLERO INCIAL------------
 testsDamasIniciales = test (a_testear)
 
-a_testear = map (\movimiento -> mover movimiento juegoPrueba ~=? Nothing) movs_a_nothing
+a_testear = map (\movimiento -> mover movimiento juegoPrueba ~=? Nothing) 
+		movs_a_nothing
 
 movs_a_nothing =
   inicialmente_invalidos_por_turno ++
@@ -62,11 +63,16 @@ testsDamasValidos = test (a_testear2)
 juegoPrueba2 = J Blanca tableroPrueba
 
 a_testear2 = [
-  mover (M ('d',4) TL ) juegoPrueba2 ~=? Just (J Negra (poner c_5 _b (sacar d_4 tableroPrueba))),
-  mover (M ('d',4) TR ) juegoPrueba2 ~=? Just (J Negra (poner f_6 _b (sacar d_4 (sacar e_5 tableroPrueba)))),
-  mover (M h_7 TL) juegoPruebaCoronacionB ~=? Just (J Negra (poner g_8 _B (sacar h_7 tableroPruebaCoronacion))),
-  mover (M b_2 BL) juegoPruebaCoronacionN ~=? Just (J Blanca (poner a_1 _N (sacar b_2 tableroPruebaCoronacion))),
-  mover (M f_2 BL) juegoPruebaCoronacionB ~=? Just (J Negra (poner e_1 _B (sacar f_2 tableroPruebaCoronacion)))
+  mover (M ('d',4) TL ) juegoPrueba2 ~=? 
+  	Just (J Negra (poner c_5 _b (sacar d_4 tableroPrueba))),
+  mover (M ('d',4) TR ) juegoPrueba2 ~=? 
+  	Just (J Negra (poner f_6 _b (sacar d_4 (sacar e_5 tableroPrueba)))),
+  mover (M h_7 TL) juegoPruebaCoronacionB ~=? 
+  	Just (J Negra (poner g_8 _B (sacar h_7 tableroPruebaCoronacion))),
+  mover (M b_2 BL) juegoPruebaCoronacionN ~=? 
+  	Just (J Blanca (poner a_1 _N (sacar b_2 tableroPruebaCoronacion))),
+  mover (M f_2 BL) juegoPruebaCoronacionB ~=? 
+  	Just (J Negra (poner e_1 _B (sacar f_2 tableroPruebaCoronacion)))
   ]
 
 tableroPrueba = poner f_4 _b (poner d_6 _n (poner e_5 _n (poner d_4 _b vacio)))
@@ -79,25 +85,33 @@ tableroPruebaCoronacion = poner h_7 _B (poner b_2 _n (poner f_2 _B vacio))
 
 ------------SECUENCIAS DE MOVIMIENTOS DE PRUEBA----------------
 --movimientos invalidos por limites del tablero
-inicialmente_invalidos_por_limites = [M ('a',1) BL, M ('a',1) BR, M ('b',8) TR, M ('b',8) TL,M ('h',8) TR, M ('h',2) TL]
+inicialmente_invalidos_por_limites = [	M ('a',1) BL, M ('a',1) BR, M ('b',8) TR, 
+					M ('b',8) TL,M ('h',8) TR, M ('h',2) TL]
 
 --movimientos invalidos por turno (color)
 inicialmente_invalidos_por_turno = [M ('b',6) BR,M ('d',6) BL]
 
 --movimientos invalidos por origen invalidos
-inicialmente_invalidos_por_origen = [M ('z',9) BL, M ('a',9) BR, M ('s',8) TR, M ('i',8) TL,M (' ',0) TR, M ('h',-2) TL]
+inicialmente_invalidos_por_origen = [	M ('z',9) BL, M ('a',9) BR, M ('s',8) TR,
+					M ('i',8) TL,M (' ',0) TR, M ('h',-2) TL]
 
 --movimientos invalidos por origen sin ficha
-invalidos_por_falta_ficha_origen juego = [M pos BL| pos <- posicionesSinFichas juego] ++ [M pos TL| pos <- posicionesSinFichas juego]
+invalidos_por_falta_ficha_origen juego = 
+			[M pos BL| pos <- posicionesSinFichas juego] ++ 
+			[M pos TL| pos <- posicionesSinFichas juego]
 
 --movimientos invalidos por color (turno del oponente)
-invalidos_por_color_del_turno juego = [M pos BR| pos <- posicionesConFichasDeColor juego Negra]
+invalidos_por_color_del_turno juego = 
+		[M pos BR| pos <- posicionesConFichasDeColor juego Negra]
 
 --movimientos invalidos por direccion incorrecta (blancas para arriba por ejemplo)
-invalidos_por_direccion juego = [M pos TR| pos <- posicionesSimplesDeColor juego Negra]++[M pos TL| pos <- posicionesSimplesDeColor juego Negra]
+invalidos_por_direccion juego = 
+		[M pos TR| pos <- posicionesSimplesDeColor juego Negra] ++ 
+		[M pos TL| pos <- posicionesSimplesDeColor juego Negra]
 
 --movimientos invalidos por destino ocupado
-inicialmente_invalidos_por_casilla_destino_ocupada = [M ('a',1) TR, M ('c',1) TL, M ('h',2) TL]
+inicialmente_invalidos_por_casilla_destino_ocupada = 
+				[M ('a',1) TR, M ('c',1) TL, M ('h',2) TL]
 
 
 
@@ -126,12 +140,14 @@ testPodar = [
 
 
 
-juegoPrueba3 = sacarJust (mover (M ('d',6) BR) (sacarJust (mover (M ('d',4) TR ) juegoPrueba2)))
+juegoPrueba3 = fromJust (mover (M ('d',6) BR) 
+		(fromJust (mover (M ('d',4) TR ) juegoPrueba2)))
 
-sacarJust (Just j) = j
 
-mejorMovTest n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPrueba3))
-mejorMovTest2 n = mejorMovimiento valuacionDamas (podar n (arbolDeJugadas juegoPrueba2))
+mejorMovTest n = mejorMovimiento valuacionDamas 
+				 (podar n (arbolDeJugadas juegoPrueba3))
+mejorMovTest2 n = mejorMovimiento valuacionDamas 
+				  (podar n (arbolDeJugadas juegoPrueba2))
 
 testMejorMovimiento = [
   mejorMovTest 1 ~=? M ('f',4) TL,
@@ -146,15 +162,18 @@ testMejorMovimiento = [
 
 tabGananBlancas = poner f_6 _b (poner g_7 _b (poner h_8 _n vacio))
 tabNoGanaNadieYEstanEmpatados = sacar g_7 tabGananBlancas
-tabCon2ReinasBlancas1NegraYUnaNegraSimple = poner a_1 _B (poner c_1 _B (poner b_8 _N (poner d_8 _n vacio)))
+tabCon2ReinasBl1NeY1NeSimple = 
+		poner a_1 _B (poner c_1 _B (poner b_8 _N (poner d_8 _n vacio)))
 
 testValuacion = [
 		valuacionDamas (J Blanca tabGananBlancas) ~=? 1,
 		valuacionDamas (J Negra tabGananBlancas) ~=? (-1),
 		valuacionDamas (J Negra tabNoGanaNadieYEstanEmpatados) ~=? 0,
 		valuacionDamas (J Blanca tabNoGanaNadieYEstanEmpatados) ~=? 0,
-		valuacionDamas (J Blanca tabCon2ReinasBlancas1NegraYUnaNegraSimple) ~=? (fromIntegral 8 / fromIntegral 7)-1,
-		valuacionDamas (J Negra tabCon2ReinasBlancas1NegraYUnaNegraSimple) ~=? (fromIntegral 6 / fromIntegral 7)-1
+		valuacionDamas (J Blanca tabCon2ReinasBl1NeY1NeSimple) ~=? 
+					(fromIntegral 8 / fromIntegral 7)-1,
+		valuacionDamas (J Negra tabCon2ReinasBl1NeY1NeSimple) ~=? 
+					(fromIntegral 6 / fromIntegral 7)-1
 	]
 
 
@@ -162,10 +181,14 @@ testValuacion = [
 
 ------FUNCIONES PARA TESTS----------
 
-posicionesSinFichas juego = [pos|pos<-posicionesValidas,contenido pos (tablero juego) == Nothing]
-posicionesConFichasDeColor juego color = posicionesSimplesDeColor juego color ++ posicionesReinasDeColor juego color
-posicionesSimplesDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Simple color))]
-posicionesReinasDeColor juego color = [pos | pos<-posicionesValidas, contenido pos (tablero juego) == (Just(Reina color))]
+posicionesSinFichas juego = [pos|pos<-posicionesValidas,
+				contenido pos (tablero juego) == Nothing]
+posicionesConFichasDeColor juego color = posicionesSimplesDeColor juego color ++ 
+					 posicionesReinasDeColor juego color
+posicionesSimplesDeColor juego color = [pos | pos<-posicionesValidas, 
+				contenido pos (tablero juego) == (Just(Simple color))]
+posicionesReinasDeColor juego color = [pos | pos<-posicionesValidas, 
+				contenido pos (tablero juego) == (Just(Reina color))]
 
 
 -----------AYUDAS-----------------------
@@ -183,7 +206,7 @@ expected ~~ actual = (sort expected) == (sort actual)
 		sort = foldl (\r e -> push r e) []
 		push r e = (filter (e<=) r) ++ [e] ++ (filter (e>) r)
 
--- constantes para que los tests sean más legibles
+-- constantes para que los tests sean mas legibles
 _n = Simple Negra
 _N = Reina Negra
 _b = Simple Blanca

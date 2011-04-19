@@ -12,7 +12,9 @@ data Direccion = TL | TR | BR | BL deriving (Eq, Ord, Show)
 
 ---- Igualdades -----
 instance Eq Tablero where
-  t1 == t2 = foldr (\pos r -> r && ((contenido pos t1) == (contenido pos t2))) True posicionesValidas
+  t1 == t2 = foldr (\pos r -> r && ((contenido pos t1) == (contenido pos t2))) 
+  		   True
+  		   posicionesValidas
 
 ---- Funciones de regalo ----
 
@@ -45,58 +47,62 @@ instance Show Tablero where
 
 ---- Ejercicios ----
 
-{- Generamos un tablero vacio, el cual es una funcion que para cualquier posicion devuelve Nothing -}
+{- Generamos un tablero vacio, el cual es una funcion que para cualquier posicion
+devuelve Nothing -}
 -- Ejercicio 1
 -- vacio :: Tablero
 vacio:: Tablero
 vacio = T g where g _ = Nothing
 
-{- Dada una posicion y un tablero, usamos la funcion definida dentro de tablero para devolver una ficha
-o Nothing en caso que no exista una en esa posicion. -}
+{- Dada una posicion y un tablero, usamos la funcion definida dentro de tablero para
+devolver una ficha o Nothing en caso que no exista una en esa posicion. -}
 -- Ejercicio 2
 --contenido :: Posicion -> Tablero -> Maybe Ficha
 contenido::Posicion -> Tablero -> Maybe Ficha
 contenido pos (T f) = f pos
 
-{- Tanto para la funcion 'poner' como para 'sacar' utilizamos la funcion 'cambiarFuncion' la cual
-dada una 'Posicion pos' y una 'Maybe Ficha ficha' devuelve una funcion modificada con el cambio
-en la 'Posicion' pos por la 'Maybe Ficha' ficha. -}
-
+{- Tanto para la funcion 'poner' como para 'sacar' utilizamos la funcion
+'cambiarFuncion' la cual dada una 'Posicion pos' y una 'Maybe Ficha ficha' 
+devuelve una funcion modificada con el cambio en la 'Posicion' pos por la 
+'Maybe Ficha' ficha. -}
 --poner :: Posicion -> Ficha -> Tablero -> Tablero
 poner pos fich (T f) = T (cambiarFuncion f pos (Just fich) )
 
 --sacar :: Posicion -> Tablero -> Tablero
 sacar pos (T f) = T (cambiarFuncion f pos Nothing )
 
---cambiarFuncion:: (Posicion-> Maybe Ficha)  -> Posicion -> Maybe Ficha  -> (Posicion-> Maybe Ficha)
+--cambiarFuncion:: (Posicion-> Maybe Ficha)  -> Posicion -> 
+--				Maybe Ficha  -> (Posicion-> Maybe Ficha)
 cambiarFuncion f pos fich = (\posx -> if (posx==pos) then fich else f posx)
 
---enRango devuelve verdadero si la posicion pasada por parametro esta en rango o falso si no
+{-enRango devuelve verdadero si la posicion pasada por parametro esta 
+en rango o falso si no-}
+--enRango :: Posicion -> Bool
 enRango p = elem p posicionesValidas
 
 --devuelve verdadero si la posicion esta vacia en el tablero
-estaVacia :: Posicion -> Tablero -> Bool
+--estaVacia :: Posicion -> Tablero -> Bool
 estaVacia p t = contenido p t == Nothing
 
 posicionesValidas::[(Char,Int)]
 posicionesValidas = [(c,n) | c <- ['a'..'h'], n <- [1..8]]
 
 
-------------------- OBSERVADORES PARA TABLERO --------------------------
-func :: Tablero -> (Posicion -> Maybe Ficha)
+------------------- OBSERVADORES PARA TABLERO ---------------------
+--func :: Tablero -> (Posicion -> Maybe Ficha)
 func (T f) = f
 
 ------------------- OBSERVADORES Y AUX PARA FICHA -----------------
 
-colorF :: Ficha -> Color
+--colorF :: Ficha -> Color
 colorF (Simple c) = c
 colorF (Reina c) = c
 
-esReina :: Ficha -> Bool
+--esReina :: Ficha -> Bool
 esReina (Simple _) = False
 esReina (Reina _) = True
 
-esSimple :: Ficha -> Bool
+--esSimple :: Ficha -> Bool
 esSimple (Simple _) = True
 esSimple (Reina _) = False
 

@@ -1,0 +1,77 @@
+\documentclass[11pt, a4paper]{article}
+
+% Configuración de márgenes de las páginas
+%\usepackage{a4wide}
+\usepackage[top=2cm,left=1.5cm,right=1.5cm,bottom=2cm]{geometry}
+
+% Paquete de acentos para Linux
+\usepackage[utf8]{inputenc}
+
+% Paquete de acentos para windows
+%	\usepackage[latin1]{inputenc}
+
+% Paquete para reconocer la separación en sílabas en español
+\usepackage[spanish]{babel}
+
+% Paquetes especiales para el TP
+\usepackage{./extras/caratula}
+
+%este paquete es para incluir codigo y que lo formatee lindo
+\usepackage{listings}
+\lstset{language=Haskell}
+
+
+% Paquete para incluir hypervinculos
+\usepackage{color}
+\usepackage{url}
+\definecolor{lnk}{rgb}{0,0,0.4}
+\usepackage[colorlinks=true,linkcolor=lnk,citecolor=blue,urlcolor=blue]{hyperref}
+
+
+% Paquete para armar índices
+\usepackage{makeidx}
+\makeindex
+
+% Más espacio entre líneas
+\parskip=1.5pt
+
+
+\begin{document}
+
+% Carátula
+\titulo{Trabajo Práctico Funcional}
+\fecha{today}
+\materia{Paradigmas de lenguajes de programaci\'on}
+\integrante{Bianchi, Mariano}{92/08}{marianobianchi08@gmail.com}
+\integrante{Brusco, Pablo}{527/08}{pablo.brusco@gmail.com}
+\integrante{H\"oss, Emiliano}{664/04}{emihoss@gmail.com}
+\maketitle
+
+% Índice
+\small
+\newpage \printindex \tableofcontents
+
+
+\newpage
+\section{M\'odulo Tablero}
+\lstinputlisting{../codigo/Tablero.hs}
+
+\newpage
+\section{M\'odulo Damas}
+\lstinputlisting{../codigo/Damas.hs}
+
+\newpage
+\section{M\'odulo Tests}
+\lstinputlisting{../codigo/Tests.hs}
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
