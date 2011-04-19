@@ -131,7 +131,17 @@ podar' = foldArbol (\val rec n -> if (n==0) then Nodo val [] else Nodo val (map 
 mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
 mejorMovimiento v aj = head (snd (minimax v aj))
 
-
+-- Para esta funcion se presento el problema de como alternar los maximos y minimos entre los distintos niveles
+-- del arbol. Una de las ideas que surgieron fue la de utilizar siempre el minimo de los valores negados, es decir:
+-- en vez de calcular max (x1, x2, x3) se puede calcular -min (-x1, -x2, -x3).
+-- El problema con esto fue que no encontramos una manera de lograr un tipo de recursion que comenzara a evaluar
+-- desde la raiz del arbol alternadamente y no desde las hojas con el fold que definimos.
+-- La segunda propuesta consistio en darnos cuenta si habia que evaluar un maximo o minimo de acuerdo al nivel
+-- del arbol en el que se encuentra el nodo. Aqui salieron dos ideas, la primera fue utilizar un contador agregando 
+-- un parametro extra a minimax' y para los niveles impares calcular minimo y para los pares maximo. 
+-- Finalmente la idea que se implemento fue la de agregar un parametro a la funcion de evaluacion, el cual es el
+-- color del jugador que tiene el turno en la raiz, asi se puede comparar con el color del jugador que tiene el
+-- turno en cada nodo y evaluar apropiadamente.
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
 										  if (null listaRec) then (valuacion (snd movs_juego),fst movs_juego)
