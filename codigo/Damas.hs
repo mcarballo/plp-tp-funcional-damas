@@ -15,8 +15,15 @@ type Valuacion = Juego -> Double
 
 ---- Igualdades ----
 
+
+{-Para la igualdad de arboles, estamos teniendo en cuenta el orden de los hijos de cada arbol. Es decir, si a1 y a2 fueran arboles de tipo "a" y e un elemento de tipo "a", el arbol (Nodo e [a1,a2]) NO es igual a (Nodo e [a2,a1]). Es necesario que el tipo "a" tenga definida la igualdad. -}
 instance (Eq a) => Eq (Arbol a) where
-	a1 == a2 = ((vNodo a1) == (vNodo a2)) && (hijos a1 == hijos a2)
+	a1 == a2 = foldArbol (\nodo rec tree -> 
+				(nodo == (vNodo tree)) && (todos (aplicarSucesivamente rec (hijos tree))) )
+				 a1 a2--rec :: [(Arbol a -> Bool)]
+              where
+                      todos = foldr (\b rec -> b && rec) True
+                      aplicarSucesivamente = foldr (\f rec lsAs -> (f (head lsAs)) : (rec (tail lsAs))) (const [])
 
 instance Eq (Movimiento) where
 	a1 == a2 = ((posMov a1) == (posMov a2)) && (dirMov a1 == dirMov a2)
@@ -40,6 +47,8 @@ arbolDeJugadas j = Nodo ([], j) $ zipWith agmov movs hijos
 
 -- Ejercicio 3
 
+{- Para programar esta funcion, la idea fue separar en casos a los distintos movimientos. Por un lado, verificamos todos los posibles movimientos invalidos. En caso que sea invalido, se devuelve directamente "Nothing". En caso de ser valido, se verificaba si era una captura o no, y en base a esto, se realizaba el movimiento indicado (previa eliminacion de la ficha capturada, si ese fuera el caso).
+-}
 mover :: Movimiento -> Juego -> Maybe Juego
 mover m j = if (elMovimientoDirectoEsInvalido || laCapturaEsInvalida) then Nothing else moverSegunSiEsSimpleOCaptura
 
@@ -82,7 +91,7 @@ posDeMoverDirecto (M pos TR) = ( chr (ord (fst pos) + 1), (snd pos) + 1 )
 posDeMoverDirecto (M pos BL) = ( chr (ord (fst pos) - 1), (snd pos) - 1 )
 posDeMoverDirecto (M pos BR) = ( chr (ord (fst pos) + 1), (snd pos) - 1 )
 
---cambia el color
+--Dado un color, devuelve el opuesto
 cambiaColor :: Color -> Color
 cambiaColor Blanca = Negra
 cambiaColor Negra = Blanca
@@ -101,16 +110,20 @@ realizarMovimiento origen destino j = Just (J nuevoColor tableroNuevo)
 										then Reina (colorF fichaVieja)
 										else fichaVieja
 
+--Esta funcion devuelve un booleano, el cual es verdadero cuando la posicion pasada como parametro se corresponde con el fondo del tablero para el color recibido como "segundo parametro"
 llegoAlFondo :: Posicion -> Color -> Bool
 llegoAlFondo p c = ((snd p == 1) && (c == Negra)) || ((snd p == 8) && (c == Blanca))
 
 
 -- Ejercicio 4
+{- Para esta función utilizamos la definida en el ejercicio 3 para conocer en cada posicion y para cada direccion si el movimiento es valido o no. En caso de serlo, se encola en la lista resultado. Por el orden elegido entre los selectores, el orden del resultado estara dado primero por las posiciones del tablero por columnas (es decir, primero la columna "a" desde 1 hasta 8, luego "b" y asi sucesivamente). 
+-}
 movimientosPosibles :: Juego -> [(Movimiento, Juego)]
-movimientosPosibles j = 	[((M pos dir), fromJust (mover (M pos dir) j)) |
-							            pos <- posicionesValidas, dir <- [TL, TR, BL, BR], esMovimientoValido (M pos dir) j]
-							where
-								esMovimientoValido mov = \game -> ((mover mov game) /= Nothing)
+movimientosPosibles j = [((M pos dir), fromJust (mover (M pos dir) j)) |
+			pos <- posicionesValidas, dir <- [TL, TR, BL, BR], 
+			esMovimientoValido (M pos dir) j]
+				where
+					esMovimientoValido mov = \game -> ((mover mov game) /= Nothing)
 
 
 
@@ -122,36 +135,38 @@ foldArbol f (Nodo x ys) = f x (map (foldArbol f) ys)
 podar :: Int -> Arbol a -> Arbol a
 podar = flip podar'
 
+{- Para esta funcion lo mas complicado fue notar que tipo tenia el paso recursivo. Una vez detectado eso, no hubo mayores problemas. Como aclaracion, tomamos a un arbol que solo tiene un nodo y ningun hijo como arbol con 0 niveles de profundidad.-}
 podar' :: Arbol a -> Int -> Arbol a
-podar' = foldArbol (\val rec n -> if (n==0) then Nodo val [] else Nodo val (map (aplicar (n-1)) rec))
-		where	aplicar n f = f n
+podar' = foldArbol (\val rec n -> if (n==0) then Nodo val [] else Nodo val (map (flip ($) (n-1)) rec))
+
 
 
 -- Ejercicio 7
 mejorMovimiento :: Valuacion -> ArbolJugadas -> Movimiento
 mejorMovimiento v aj = head (snd (minimax v aj))
 
--- Para esta funcion se presento el problema de como alternar los maximos y minimos entre los distintos niveles
--- del arbol. Una de las ideas que surgieron fue la de utilizar siempre el minimo de los valores negados, es decir:
--- en vez de calcular max (x1, x2, x3) se puede calcular -min (-x1, -x2, -x3).
--- El problema con esto fue que no encontramos una manera de lograr un tipo de recursion que comenzara a evaluar
--- desde la raiz del arbol alternadamente y no desde las hojas con el fold que definimos.
--- La segunda propuesta consistio en darnos cuenta si habia que evaluar un maximo o minimo de acuerdo al nivel
--- del arbol en el que se encuentra el nodo. Aqui salieron dos ideas, la primera fue utilizar un contador agregando 
--- un parametro extra a minimax' y para los niveles impares calcular minimo y para los pares maximo. 
--- Finalmente la idea que se implemento fue la de agregar un parametro a la funcion de evaluacion, el cual es el
--- color del jugador que tiene el turno en la raiz, asi se puede comparar con el color del jugador que tiene el
--- turno en cada nodo y evaluar apropiadamente.
+{-Para esta funcion se presento el problema de como alternar los maximos y minimos entre los distintos niveles
+del arbol. Una de las ideas que surgieron fue la de utilizar siempre el minimo de los valores negados, es decir:
+en vez de calcular max (x1, x2, x3) se puede calcular -min (-x1, -x2, -x3).
+El problema con esto fue que no encontramos una manera de lograr un tipo de recursion que comenzara a evaluar
+desde la raiz del arbol alternadamente y no desde las hojas con el fold que definimos.
+La segunda propuesta consistio en darnos cuenta si habia que evaluar un maximo o minimo de acuerdo al nivel
+del arbol en el que se encuentra el nodo. Aqui salieron dos ideas, la primera fue utilizar un contador agregando 
+un parametro extra a minimax' y para los niveles impares calcular minimo y para los pares maximo. 
+Finalmente la idea que se implemento fue la de agregar un parametro a la funcion de evaluacion, el cual es el
+color del jugador que tiene el turno en la raiz, asi se puede comparar con el color del jugador que tiene el
+turno en cada nodo y evaluar apropiadamente.-}
 minimax :: Valuacion -> ArbolJugadas -> (Double, [Movimiento])
 minimax fVal arbol = foldArbol 	(\movs_juego listaRec ->
-										  if (null listaRec) then (valuacion (snd movs_juego),fst movs_juego)
-											else (minimaValuacion listaRec, movimientos listaRec)
-								) arbol--listaRec :: [(Double, [Movimiento])]
-							where
-								valuacion juego = valuacionConveniente (colorJ (snd (vNodo arbol))) fVal juego
-								movimientos l_V_lM = ((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
-								indiceDelMinimo l_V_lM = dameIndice (minimaValuacion l_V_lM) (dameFirsts l_V_lM)
-								minimaValuacion l_V_lM = minL (dameFirsts l_V_lM)
+					if (null listaRec)
+						then (valuacion (snd movs_juego),fst movs_juego)
+						else (minimaValuacion listaRec, movimientos listaRec)
+				) arbol--listaRec :: [(Double, [Movimiento])]
+			where
+				valuacion juego = valuacionConveniente (colorJ (snd (vNodo arbol))) fVal juego
+				movimientos l_V_lM = ((dameSeconds l_V_lM)!!indiceDelMinimo l_V_lM)
+				indiceDelMinimo l_V_lM = dameIndice (minimaValuacion l_V_lM) (dameFirsts l_V_lM)
+				minimaValuacion l_V_lM = minL (dameFirsts l_V_lM)
 
 minL :: Ord a => [a] -> a
 minL = foldr1 (\x rec -> if (x<=rec) then x else rec)
