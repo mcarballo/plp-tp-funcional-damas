@@ -1,0 +1,1 @@
+Juego de damas hecho en haskell (lenguaje de programación funcional) para un trabajo práctico.
